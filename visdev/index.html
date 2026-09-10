@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Aviator, Gabriel Hassan</title>
+<meta name="description" content="A previs board and a visdev sheet for one generated character, with the intent behind the shots and the sheet. Personal project in ComfyUI, July 2026.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#1a1411">
+<link rel="stylesheet" href="../fonts/fonts.css">
+<style>
+  :root {
+    --ground: #1a1411; --wool: #ece1cf; --leather: #a08f7c; --lantern: #d79b4c; --hair: rgba(236, 225, 207, 0.16);
+    --serif: "Source Serif 4", "Liberation Serif", Georgia, serif;
+    --sans: "IBM Plex Sans Condensed", "Liberation Sans", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--ground); }
+  body { margin: 0; background: var(--ground); color: var(--wool); font-family: var(--serif); font-size: 17px; line-height: 1.5; font-optical-sizing: auto; -webkit-text-size-adjust: 100%; }
+  img { max-width: 100%; height: auto; display: block; }
+  a { color: var(--lantern); }
+  a:focus-visible { outline: 2px solid var(--lantern); outline-offset: 3px; }
+  p { margin: 0; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 40px; }
+  .sans { font-family: var(--sans); font-weight: 400; color: var(--leather); line-height: 1.4; }
+
+  .mast { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 16px 32px; padding-bottom: 20px; margin-bottom: 28px; border-bottom: 1px solid var(--hair); }
+  .mast .who { font-family: var(--sans); color: var(--leather); font-size: 16px; margin-bottom: 6px; }
+  .mast h1 { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: clamp(46px, 7.5vw, 86px); line-height: 1; letter-spacing: -0.012em; margin: 0 0 10px; color: var(--wool); }
+  .mast .sub { font-style: italic; font-size: clamp(18px, 2vw, 22px); line-height: 1.35; color: var(--leather); max-width: 32em; }
+  .mast .meta { font-family: var(--sans); color: var(--leather); font-size: 16px; text-align: right; }
+  .mast .meta span { display: block; }
+  .mast .meta a { text-decoration: none; border-bottom: 1px solid rgba(215, 155, 76, 0.5); }
+  .mast .meta a:hover { border-bottom-color: var(--lantern); }
+
+  h2 { font-family: var(--sans); font-weight: 500; font-size: 16px; color: var(--leather); margin: 0 0 14px; line-height: 1.3; }
+  h2 span { font-weight: 400; }
+  h2 span::before { content: "   "; white-space: pre; }
+
+  .tiles { list-style: none; margin: 0 0 32px; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px 16px; }
+  .tile a, .cell a { display: block; box-shadow: 0 0 0 1px var(--hair); }
+  .tile a:hover, .cell a:hover { box-shadow: 0 0 0 1px var(--leather); }
+  .lab { display: block; margin-top: 8px; font-family: var(--sans); font-size: 15px; color: var(--wool); line-height: 1.35; }
+  .lab b { font-weight: 600; color: var(--lantern); margin-right: 7px; font-variant-numeric: tabular-nums; }
+  .score { display: block; margin-top: 2px; font-family: var(--sans); font-size: 14px; color: var(--leather); font-variant-numeric: tabular-nums; line-height: 1.35; }
+
+  .below { display: grid; grid-template-columns: minmax(200px, 270px) 1fr; gap: 24px 36px; align-items: start; margin-bottom: 48px; }
+  .ref { margin: 0; }
+  .ref a { display: block; box-shadow: 0 0 0 1px var(--hair); }
+  .ref figcaption { margin-top: 8px; font-family: var(--sans); font-size: 14px; color: var(--leather); line-height: 1.4; }
+  .ref figcaption b { display: block; font-weight: 600; color: var(--lantern); margin-bottom: 2px; }
+  .caption { font-size: 18px; line-height: 1.55; color: var(--wool); max-width: 64ch; }
+  .caption + .caption { margin-top: 12px; }
+  table.spec { border-collapse: collapse; width: 100%; max-width: 64ch; margin-top: 20px; }
+  table.spec th, table.spec td { font-family: var(--sans); font-size: 15px; line-height: 1.45; text-align: left; vertical-align: top; padding: 9px 0; border-top: 1px solid var(--hair); }
+  table.spec th { font-weight: 500; color: var(--leather); width: 8.2em; padding-right: 14px; }
+  table.spec td { color: var(--wool); }
+
+  .sheet { display: grid; grid-template-columns: 2.4em repeat(3, 1fr); gap: 20px 16px; align-items: start; margin-bottom: 20px; }
+  .sheet .colhead { font-family: var(--sans); font-size: 15px; color: var(--wool); padding-bottom: 2px; }
+  .sheet .rowhead { font-family: var(--sans); font-size: 15px; color: var(--leather); writing-mode: vertical-rl; transform: rotate(180deg); height: 100%; text-align: center; align-self: stretch; }
+  .sheet .light { display: none; }
+  .sheet + .caption + .caption { margin-bottom: 40px; }
+
+  footer { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-top: 18px; border-top: 1px solid var(--hair); font-family: var(--sans); font-size: 15px; color: var(--leather); }
+  footer a { text-decoration: none; border-bottom: 1px solid rgba(215, 155, 76, 0.5); }
+
+  @media (max-width: 899px) {
+    .tiles { grid-template-columns: repeat(2, 1fr); gap: 20px 14px; }
+  }
+  @media (max-width: 719px) {
+    .wrap { padding-inline: 16px; padding-block: 20px 32px; }
+    .mast { grid-template-columns: 1fr; gap: 10px; }
+    .mast .meta { text-align: left; }
+    .below { grid-template-columns: 1fr; }
+    .ref { max-width: 270px; }
+    .sheet { grid-template-columns: repeat(3, 1fr); gap: 16px 8px; }
+    .sheet .colhead { display: none; }
+    .sheet .rowhead { grid-column: 1 / -1; writing-mode: horizontal-tb; transform: none; height: auto; text-align: left; color: var(--wool); margin-top: 6px; }
+    .sheet .light { display: block; margin-top: 6px; font-family: var(--sans); font-size: 13px; color: var(--wool); line-height: 1.3; }
+    .sheet .score { font-size: 12.5px; }
+    .lab { font-size: 14px; }
+    .score { font-size: 13px; }
+    .caption { font-size: 17px; }
+    table.spec th { width: 6.6em; padding-right: 10px; }
+    table.spec th, table.spec td { font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="mast">
+    <div>
+      <div class="who">Gabriel Hassan</div>
+      <h1>The Aviator</h1>
+      <p class="sub">A previs board and a visdev sheet for one generated character.</p>
+    </div>
+    <div class="meta"><span>Personal project</span><span>ComfyUI, July 2026</span><span><a href="Gabriel_Hassan_Aviator_Board.pdf">Open as PDF, 2.2 MB</a></span></div>
+  </header>
+
+  <section aria-labelledby="board-h">
+    <h2 id="board-h">Previs board<span>Eight shots of one sequence</span></h2>
+    <ol class="tiles">
+      <li class="tile">
+        <a href="../frames/pfx-01.jpg"><img src="../frames/pfx-01.jpg" width="1200" height="1615" loading="lazy" alt="Shot 01, wide establish"></a>
+        <span class="lab"><b>01</b>Wide establish</span>
+        <span class="score">face pass, unscored at 108 px</span>
+      </li>
+      <li class="tile">
+        <a href="../frames/pfx-02.jpg"><img src="../frames/pfx-02.jpg" width="1200" height="1615" loading="lazy" alt="Shot 02, full walk"></a>
+        <span class="lab"><b>02</b>Full walk</span>
+        <span class="score">face pass, unscored at 123 px</span>
+      </li>
+      <li class="tile">
+        <a href="../frames/pfx-03.jpg"><img src="../frames/pfx-03.jpg" width="1200" height="1615" loading="lazy" alt="Shot 03, crouch at landing gear"></a>
+        <span class="lab"><b>03</b>Crouch at landing gear</span>
+        <span class="score">0.43 / 0.45, yaw 56°</span>
+      </li>
+      <li class="tile">
+        <a href="../frames/pfx-04.jpg"><img src="../frames/pfx-04.jpg" width="1200" height="1615" loading="lazy" alt="Shot 04, flight map"></a>
+        <span class="lab"><b>04</b>Flight map</span>
+        <span class="score">0.58 / 0.67, yaw 17°</span>
+      </li>
+      <li class="tile">
+        <a href="../frames/pfx-05.jpg"><img src="../frames/pfx-05.jpg" width="1200" height="1615" loading="lazy" alt="Shot 05, close-up at dusk"></a>
+        <span class="lab"><b>05</b>Close-up at dusk</span>
+        <span class="score">0.55 / 0.61, yaw 49°</span>
+      </li>
+      <li class="tile">
+        <a href="../frames/pfx-06.jpg"><img src="../frames/pfx-06.jpg" width="1200" height="1615" loading="lazy" alt="Shot 06, goggles insert"></a>
+        <span class="lab"><b>06</b>Goggles insert</span>
+        <span class="score">0.85 / 0.77, yaw 2°</span>
+      </li>
+      <li class="tile">
+        <a href="../frames/pfx-07.jpg"><img src="../frames/pfx-07.jpg" width="1200" height="1615" loading="lazy" alt="Shot 07, climbing into the cockpit"></a>
+        <span class="lab"><b>07</b>Climbing into the cockpit</span>
+        <span class="score">0.28 / 0.58, yaw 40°</span>
+      </li>
+      <li class="tile">
+        <a href="../frames/pfx-08.jpg"><img src="../frames/pfx-08.jpg" width="1200" height="1615" loading="lazy" alt="Shot 08, low angle, ready"></a>
+        <span class="lab"><b>08</b>Low angle, ready</span>
+        <span class="score">Lightning pass, 0.58 / 0.56, yaw 14°</span>
+      </li>
+    </ol>
+
+    <div class="below">
+      <figure class="ref">
+        <a href="../frames/reference.jpg"><img src="../frames/reference.jpg" width="896" height="1152" alt="The reference image: the character in a shearling flight jacket and goggles, in a hangar"></a>
+        <figcaption><b>Reference</b>Every frame was conditioned on this image.</figcaption>
+      </figure>
+      <div>
+        <p class="caption">The board runs wide to tight and back out: 01 sets the place and her scale in it, 02 walks her to the aeroplane, 03 and 04 are the checks before a flight, hands on the gear and eyes on the map, 05 and 06 bring the camera to her face and then to the goggles, and 07 and 08 put her in the cockpit and look up with her. The reference carried the face. The prompt held everything else: the flight cap, the shearling jacket, the breeches and boots, and the light and lens for each shot. 03 came back outdoors at sunset and was kept, because the sequence is about her surviving the cut, not the set staying put.</p>
+        <table class="spec">
+          <tr><th>Model</th><td>Qwen-Image-Edit 2511 in ComfyUI with the Qwen 2.5-VL text encoder. Shot 08 is a four-step Lightning pass of the same model.</td></tr>
+          <tr><th>Identity</th><td>Held by the model from the reference image, with a prompt per shot.</td></tr>
+          <tr><th>Checks</th><td>Every frame checked against the reference by score and by eye, two encoders under each frame. Three shots needed help and are marked.</td></tr>
+        <tr><th>Character</th><td>Synthetic throughout. The reference image was itself generated.</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="sheet-h">
+    <h2 id="sheet-h">Visdev sheet<span>Outfit down, lighting across</span></h2>
+    <div class="sheet">
+      <div></div>
+      <div class="colhead">Hangar at dusk</div>
+      <div class="colhead">Morning airfield</div>
+      <div class="colhead">Night workshop</div>
+      <div class="rowhead">Aviator jacket</div>
+      <div class="cell">
+        <a href="../frames/pfx-o1-aviator_l1-hangardusk.jpg"><img src="../frames/pfx-o1-aviator_l1-hangardusk.jpg" width="1200" height="1615" loading="lazy" alt="Aviator jacket, hangar at dusk"></a>
+        <span class="light">Hangar at dusk</span>
+        <span class="score">0.78 / 0.79, yaw 40°</span>
+      </div>
+      <div class="cell">
+        <a href="../frames/pfx-o1-aviator_l2-morningfield.jpg"><img src="../frames/pfx-o1-aviator_l2-morningfield.jpg" width="1200" height="1615" loading="lazy" alt="Aviator jacket, morning airfield"></a>
+        <span class="light">Morning airfield</span>
+        <span class="score">0.71 / 0.79, yaw 32°</span>
+      </div>
+      <div class="cell">
+        <a href="../frames/pfx-o1-aviator_l3-nightshop.jpg"><img src="../frames/pfx-o1-aviator_l3-nightshop.jpg" width="1200" height="1615" loading="lazy" alt="Aviator jacket, night workshop"></a>
+        <span class="light">Night workshop</span>
+        <span class="score">0.78 / 0.72, yaw 33°</span>
+      </div>
+      <div class="rowhead">Evening gown</div>
+      <div class="cell">
+        <a href="../frames/pfx-o2-evening_l1-hangardusk.jpg"><img src="../frames/pfx-o2-evening_l1-hangardusk.jpg" width="1200" height="1615" loading="lazy" alt="Evening gown, hangar at dusk"></a>
+        <span class="light">Hangar at dusk</span>
+        <span class="score">0.82 / 0.77, yaw 29°</span>
+      </div>
+      <div class="cell">
+        <a href="../frames/pfx-o2-evening_l2-morningfield.jpg"><img src="../frames/pfx-o2-evening_l2-morningfield.jpg" width="1200" height="1615" loading="lazy" alt="Evening gown, morning airfield"></a>
+        <span class="light">Morning airfield</span>
+        <span class="score">0.78 / 0.75, yaw 16°</span>
+      </div>
+      <div class="cell">
+        <a href="../frames/pfx-o2-evening_l3-nightshop.jpg"><img src="../frames/pfx-o2-evening_l3-nightshop.jpg" width="1200" height="1615" loading="lazy" alt="Evening gown, night workshop"></a>
+        <span class="light">Night workshop</span>
+        <span class="score">0.79 / 0.76, yaw 23°</span>
+      </div>
+      <div class="rowhead">Coveralls</div>
+      <div class="cell">
+        <a href="../frames/pfx-o3-coveralls_l1-hangardusk.jpg"><img src="../frames/pfx-o3-coveralls_l1-hangardusk.jpg" width="1200" height="1615" loading="lazy" alt="Coveralls, hangar at dusk"></a>
+        <span class="light">Hangar at dusk</span>
+        <span class="score">0.86 / 0.85, yaw 19°</span>
+      </div>
+      <div class="cell">
+        <a href="../frames/pfx-o3-coveralls_l2-morningfield.jpg"><img src="../frames/pfx-o3-coveralls_l2-morningfield.jpg" width="1200" height="1615" loading="lazy" alt="Coveralls, morning airfield"></a>
+        <span class="light">Morning airfield</span>
+        <span class="score">0.56 / 0.61, yaw 41°</span>
+      </div>
+      <div class="cell">
+        <a href="../frames/pfx-o3-coveralls_l3-nightshop.jpg"><img src="../frames/pfx-o3-coveralls_l3-nightshop.jpg" width="1200" height="1615" loading="lazy" alt="Coveralls, night workshop"></a>
+        <span class="light">Night workshop</span>
+        <span class="score">0.58 / 0.66, yaw 27°</span>
+      </div>
+    </div>
+    <p class="caption">Outfit down, lighting across, so one axis holds while the other moves: the same face in three keys, warm dusk with a cool rim, open morning sun and tungsten in deep shadow, and in three wardrobes that change the hair and the framing with them.</p>
+    <p class="caption">She holds through the jacket and the gown. The coveralls row is where she slips: the kerchief changes how the face is framed, and the two cells that read least like her are both there.</p>
+  </section>
+
+  <footer><span>Gabriel Hassan</span><a href="Gabriel_Hassan_Aviator_Board.pdf">PDF version</a></footer>
+</div>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "2535a28963d74d9e8c27773db60c8757"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
