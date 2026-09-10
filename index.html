@@ -60,7 +60,7 @@
   .sheet .colhead { font-family: var(--sans); font-size: 15px; color: var(--wool); padding-bottom: 2px; }
   .sheet .rowhead { font-family: var(--sans); font-size: 15px; color: var(--leather); writing-mode: vertical-rl; transform: rotate(180deg); height: 100%; text-align: center; align-self: stretch; }
   .sheet .light { display: none; }
-  .sheet + .caption { margin-bottom: 40px; }
+  .sheet + .caption + .caption { margin-bottom: 40px; }
 
   footer { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-top: 18px; border-top: 1px solid var(--hair); font-family: var(--sans); font-size: 15px; color: var(--leather); }
   footer a { text-decoration: none; border-bottom: 1px solid rgba(215, 155, 76, 0.5); }
@@ -149,8 +149,7 @@
         <figcaption><b>Reference</b>Every frame was conditioned on this image.</figcaption>
       </figure>
       <div>
-        <p class="caption">Eight shots above. Three outfits under three lighting setups below.</p>
-        <p class="caption">Scores follow the head turn: the lowest, 03 and 07, are turned 56° and 40° from camera. The eye’s calls fell elsewhere. On 08 both encoders preferred the render that was replaced, which did not read as her. The unrendered eyes in 01 and 02 sit under the floor, and only a close look caught them. 08 is also the softest frame, and the skin in 05 sits a touch waxy.</p>
+        <p class="caption">Scores follow the head turn: the lowest, 03 and 07, are turned 56° and 40° from camera, and 07 also looks 34° down, where the two encoders part company. The disagreement is the flag, not either number. An earlier render of 08 scored higher on both encoders but did not read as her; the Lightning pass shown here replaced it, and is the softest frame because it decodes at half the size. The unrendered eyes in 01 and 02 sit below the 128 px scoring floor, and only a close look caught them. The skin in 05 sits a touch waxy.</p>
         <table class="spec">
           <tr><th>Model</th><td>Qwen-Image-Edit 2511 in ComfyUI with the Qwen 2.5-VL text encoder. Shot 08 is a four-step Lightning pass of the same model.</td></tr>
           <tr><th>Identity</th><td>Held by the model from the reference image, with a prompt per shot.</td></tr>
@@ -220,6 +219,7 @@
       </div>
     </div>
     <p class="caption">Same model, settings and reference as the board.</p>
+    <p class="caption">For scale, the reference scores 0.96 / 0.97 against a re-crop of itself and 0.95 / 0.92 against its mirror. There is no threshold: in a human-labelled calibration on this character, five frames rejected by eye scored 0.72 to 0.75 on antelopev2, inside the accepted set’s 0.56 to 0.97. A score flags a frame for a second look and never overrules one.</p>
   </section>
 
   <footer><span>Gabriel Hassan</span><a href="Gabriel_Hassan_Aviator_Board.pdf">PDF version</a></footer>
